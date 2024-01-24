@@ -12,7 +12,7 @@ const app = express();
 
 // set up db connection
 const dev_db_url =
-  'mongodb+srv://admin:MSDTPsjp8ZkyiBx@cluster0.vlnhud0.mongodb.net/local_library?retryWrites=true&w=majority';
+  'mongodb+srv://admin:MSDTPsjp8ZkyiBx@cluster0.vlnhud0.mongodb.net/inventory_app?retryWrites=true&w=majority';
 const mongodb = process.env.MONGODB_URL || dev_db_url;
 mongoose.set('strictQuery', true);
 

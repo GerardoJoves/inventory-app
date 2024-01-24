@@ -3,11 +3,28 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const mongoose = require('mongoose');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
 const app = express();
+
+// set up db connection
+const dev_db_url =
+  'mongodb+srv://admin:MSDTPsjp8ZkyiBx@cluster0.vlnhud0.mongodb.net/local_library?retryWrites=true&w=majority';
+const mongodb = process.env.MONGODB_URL || dev_db_url;
+mongoose.set('strictQuery', true);
+
+async function connectDB() {
+  await mongoose.connect(mongodb);
+}
+
+connectDB().catch((err) => {
+  console.log(err);
+  // make the process fail
+  process.exit(1);
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

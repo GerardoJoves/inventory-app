@@ -20,7 +20,19 @@ a {
 }
 
 ul {
+  list-style-position: inside;
+}
+
+aside ul {
   list-style: none;
+}
+
+main > *:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+main ul > li:not(:last-of-type) {
+  margin-bottom: 10px;
 }
 
 header,

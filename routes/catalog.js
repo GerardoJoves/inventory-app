@@ -1,5 +1,6 @@
 const express = require('express');
 const productController = require('../controllers/prodcutController');
+const categoryController = require('../controllers/categoryController');
 
 const router = express.Router();
 
@@ -20,5 +21,23 @@ router.get('/product/:id/update', productController.product_update_get);
 router.post('/product/:id/update', productController.product_update_post);
 
 router.get('/product/:id', productController.product_details);
+
+//  category routes
+
+router.get('/categories', categoryController.category_list);
+
+router.get('/category/create', categoryController.category_create_get);
+
+router.post('/category/create', categoryController.category_create_post);
+
+router.get('/category/:id/delete', categoryController.category_delete_get);
+
+router.post('/category/:id/delete', categoryController.category_delete_post);
+
+router.get('/category/:id/update', categoryController.category_update_get);
+
+router.post('/category/:id/update', categoryController.category_update_post);
+
+router.get('/category/:id', categoryController.category_details);
 
 module.exports = router;

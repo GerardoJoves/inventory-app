@@ -16,7 +16,9 @@ exports.index = asyncHandler(async (req, res) => {
 });
 
 exports.product_list = asyncHandler(async (req, res) => {
-  res.send('Not implemented: product list');
+  const allProducts = await Product.find({}, 'name price').exec();
+
+  res.render('product_list', { title: 'Product list', allProducts });
 });
 
 exports.product_details = asyncHandler(async (req, res) => {

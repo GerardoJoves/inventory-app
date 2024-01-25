@@ -1,5 +1,9 @@
 const asyncHandler = require('express-async-handler');
 
+exports.index = asyncHandler((req, res) => {
+  res.send('Not implemented: home page');
+});
+
 exports.product_list = asyncHandler((req, res) => {
   res.send('Not implemented: product list');
 });

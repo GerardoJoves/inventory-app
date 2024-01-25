@@ -4,6 +4,10 @@ const categoryController = require('../controllers/categoryController');
 
 const router = express.Router();
 
+// Home
+
+router.get('/', productController.index);
+
 // Product routes
 
 router.get('/products', productController.product_list);

@@ -21,8 +21,18 @@ exports.product_list = asyncHandler(async (req, res) => {
   res.render('product_list', { title: 'Product list', allProducts });
 });
 
-exports.product_details = asyncHandler(async (req, res) => {
-  res.send('Not implemented: product details');
+exports.product_details = asyncHandler(async (req, res, next) => {
+  const product = await Product.findById(req.params.id)
+    .populate('categories')
+    .exec();
+
+  if (!product) {
+    const err = new Error('Product not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render('product_details', { title: 'Product details', product });
 });
 
 exports.product_create_get = asyncHandler(async (req, res) => {

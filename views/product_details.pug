@@ -1,0 +1,14 @@
+extends layout 
+
+block content
+  h2 Product: #{product.name}
+  p #[strong Price: ] #{product.price}$
+  p
+    strong Description: 
+    br
+    | #{product.description}
+  p #[strong Number in stock: ] #{product.number_in_stock}
+  p #[strong Categories: ]
+  ul 
+    each category in product.categories
+      li: a(href=category.url) #{category.name}

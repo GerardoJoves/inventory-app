@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h2 Category: #{category.name}
+  if category.description
+    p= category.description
+  h3 Products
+  if !products 
+    p This category has no products
+  else
+    ul 
+      each product in products
+        li: a(href=product.url) #{product.name}
+

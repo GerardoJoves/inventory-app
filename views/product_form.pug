@@ -1,0 +1,59 @@
+extends layout
+
+block styles
+  link(rel='stylesheet' href='/stylesheets/form.css')
+
+block content
+  h2= title
+
+  form(method='post') 
+    label(for='name') Name:
+    input(
+      type='text' 
+      id='name' 
+      name='name' 
+      value=(product ? product.name : '') 
+      required
+    )
+
+    label(for='description') Description:
+    textarea(
+      id='description'
+      name='description'
+      required
+    ) #{product ? prodcut.description : ''}
+
+    div.numeric-fields-wrapper
+      div
+        label(for='price') Price:
+        input(
+          type='number'
+          id='price'
+          name='price'
+          value=(product ? product.price : '')
+        )
+      div
+        label(for='number_in_stock') Number in stock:
+        input(
+          type='number'
+          id='number_in_stock'
+          name='number_in_stock'
+          value=(product ? product.number_in_stock : '')
+        )
+
+    if categories
+      fieldset 
+        legend Product categories
+        each category in categories
+          div 
+            input(
+              type="checkbox" 
+              id=category._id 
+              name='categories' 
+              value=category._id
+              checked=category.checked
+            )
+            |  
+            label(for=category._id) #{category.name}
+    button(type='submit') submit
+  

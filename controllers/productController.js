@@ -36,7 +36,12 @@ exports.product_details = asyncHandler(async (req, res, next) => {
 });
 
 exports.product_create_get = asyncHandler(async (req, res) => {
-  res.send('Not implemented: product create get');
+  const allCategories = await Category.find({}, 'name').exec();
+
+  res.render('product_form', {
+    title: 'Create product',
+    categories: allCategories,
+  });
 });
 
 exports.product_create_post = asyncHandler(async (req, res) => {

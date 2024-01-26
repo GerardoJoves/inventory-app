@@ -1,11 +1,11 @@
 const asyncHandler = require('express-async-handler');
 const Product = require('../models/product');
-const Catergory = require('../models/category');
+const Category = require('../models/category');
 
 exports.index = asyncHandler(async (req, res) => {
   const [numProducts, numCategories] = await Promise.all([
     Product.countDocuments().exec(),
-    Catergory.countDocuments().exec(),
+    Category.countDocuments().exec(),
   ]);
 
   res.render('index', {

@@ -15,7 +15,10 @@ const productSchema = new Schema({
     type: Number,
     required: true,
   },
-  number_in_stock: Number,
+  number_in_stock: {
+    type: Number,
+    default: 0,
+  },
 });
 
 productSchema.virtual('url').get(function () {

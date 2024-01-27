@@ -104,10 +104,43 @@ exports.category_delete_post = asyncHandler(async (req, res) => {
   res.redirect('/catalog/categories');
 });
 
-exports.category_update_get = asyncHandler(async (req, res) => {
-  res.send('Not implemented: category update get');
+exports.category_update_get = asyncHandler(async (req, res, next) => {
+  const category = ObjectId.isValid(req.params.id)
+    ? await Category.findById(req.params.id)
+    : null;
+
+  if (!category) {
+    const error = new Error('Category not found');
+    error.status = 404;
+    return next(error);
+  }
+
+  res.render('category_form', { title: 'Update category', category });
 });
 
-exports.category_update_post = asyncHandler(async (req, res) => {
-  res.send('Not implemented: category update post');
-});
+exports.category_update_post = [
+  categoryValidator,
+  asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    const category = new Category({
+      _id: req.params.id,
+      name: req.body.name,
+      description: req.body.description,
+    });
+
+    if (!errors.isEmpty()) {
+      res.render('category_form', {
+        title: 'Update category',
+        category,
+        errors: errors.array(),
+      });
+      return;
+    }
+
+    const updatedCategory = await Category.findByIdAndUpdate(
+      req.params.id,
+      category
+    );
+    res.redirect(updatedCategory.url);
+  }),
+];

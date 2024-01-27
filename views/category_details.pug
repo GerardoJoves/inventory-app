@@ -5,7 +5,7 @@ block content
   if category.description
     p= category.description
   h3 Products
-  if !products 
+  if products.length === 0
     p This category has no products
   else
     ul 

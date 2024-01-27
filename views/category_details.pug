@@ -11,4 +11,5 @@ block content
     ul 
       each product in products
         li: a(href=product.url) #{product.name}
-
+  hr
+  p: a(href=(category.url + '/delete')) Delete category

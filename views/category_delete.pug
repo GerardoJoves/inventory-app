@@ -1,0 +1,18 @@
+extends layout 
+
+block styles
+  link(rel='stylesheet' href='/stylesheets/form.css')
+
+block content
+  h2= `${title}: ${category.name}`
+
+  if products.length != 0
+    p Remove this category from the following products before attempting to delete it:
+    ul 
+      each product in products
+        li: a(href=product.url) #{product.name}
+  else 
+    p Are you sure you want to delete this category?
+    form(method='post') 
+      input(type='hidden' name='id' value=category._id)
+      button(type='submit') Delete

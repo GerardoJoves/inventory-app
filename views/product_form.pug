@@ -57,4 +57,8 @@ block content
             |  
             label(for=category._id) #{category.name}
     button(type='submit') submit
-  
+    
+  if errors
+    ul
+      for error in errors
+        li!= error.msg

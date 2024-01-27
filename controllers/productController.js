@@ -1,4 +1,6 @@
 const asyncHandler = require('express-async-handler');
+const { validationResult } = require('express-validator');
+const productValidator = require('../utils/productValidator');
 const Product = require('../models/product');
 const Category = require('../models/category');
 
@@ -44,9 +46,39 @@ exports.product_create_get = asyncHandler(async (req, res) => {
   });
 });
 
-exports.product_create_post = asyncHandler(async (req, res) => {
-  res.send('Not implemented: product create post');
-});
+exports.product_create_post = [
+  productValidator,
+  asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    const product = new Product({
+      name: req.body.name,
+      description: req.body.description,
+      price: req.body.price,
+      number_in_stock: req.body.number_in_stock,
+      categories: req.body.categories,
+    });
+
+    if (!errors.isEmpty()) {
+      const allCategories = await Category.find({}, 'name').exec();
+
+      allCategories.forEach((category) => {
+        if (!product.categories.includes(category._id)) return;
+        category.checked = true;
+      });
+
+      res.render('product_form', {
+        title: 'Create product',
+        categories: allCategories,
+        product,
+        errors: errors.array(),
+      });
+      return;
+    }
+
+    await product.save();
+    res.redirect(product.url);
+  }),
+];
 
 exports.product_delete_get = asyncHandler(async (req, res) => {
   res.send('Not implemented: product delete get');

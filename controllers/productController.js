@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const { validationResult } = require('express-validator');
+const { ObjectId } = require('mongoose').Types;
 const productValidator = require('../utils/productValidator');
 const Product = require('../models/product');
 const Category = require('../models/category');
@@ -80,12 +81,28 @@ exports.product_create_post = [
   }),
 ];
 
-exports.product_delete_get = asyncHandler(async (req, res) => {
-  res.send('Not implemented: product delete get');
-});
+exports.product_delete_get = async (req, res) => {
+  const product = ObjectId.isValid(req.params.id)
+    ? await Product.findById(req.params.id, 'name').exec()
+    : null;
+
+  if (!product) {
+    res.redirect('/catalog/products');
+    return;
+  }
+
+  res.render('product_delete', {
+    title: 'Delete product',
+    product,
+  });
+};
 
 exports.product_delete_post = asyncHandler(async (req, res) => {
-  res.send('Not implemented: product delete post');
+  if (ObjectId.isValid(req.params.id)) {
+    await Product.findByIdAndDelete(req.params.id);
+  }
+
+  res.redirect('/catalog/products');
 });
 
 exports.product_update_get = asyncHandler(async (req, res) => {

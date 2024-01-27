@@ -1,6 +1,8 @@
 const asyncHandler = require('express-async-handler');
+const { validationResult } = require('express-validator');
 const Category = require('../models/category');
 const Product = require('../models/product');
+const categoryValidator = require('../utils/categoryValidator');
 
 exports.category_list = asyncHandler(async (req, res) => {
   const allCategories = await Category.find({}, 'name').exec();
@@ -27,13 +29,32 @@ exports.category_details = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.category_create_get = asyncHandler(async (req, res) => {
-  res.send('Not implemented: category create get');
-});
+exports.category_create_get = (req, res) => {
+  res.render('category_form', { title: 'Create category' });
+};
 
-exports.category_create_post = asyncHandler(async (req, res) => {
-  res.send('Not implemented: category create post');
-});
+exports.category_create_post = [
+  categoryValidator,
+  asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    const category = new Category({
+      name: req.body.name,
+      description: req.body.description,
+    });
+
+    if (!errors.isEmpty()) {
+      res.render('category_form', {
+        title: 'Create category',
+        category,
+        errors: errors.array(),
+      });
+      return;
+    }
+
+    await category.save();
+    res.redirect(category.url);
+  }),
+];
 
 exports.category_delete_get = asyncHandler(async (req, res) => {
   res.send('Not implemented: category delete get');

@@ -105,10 +105,68 @@ exports.product_delete_post = asyncHandler(async (req, res) => {
   res.redirect('/catalog/products');
 });
 
-exports.product_update_get = asyncHandler(async (req, res) => {
-  res.send('Not implemented: product update get');
+exports.product_update_get = asyncHandler(async (req, res, next) => {
+  if (!ObjectId.isValid(req.params.id)) {
+    // Prevent Product.findById from throwing when called with invalid id
+    req.params.id = null;
+  }
+
+  const [product, categories] = await Promise.all([
+    Product.findById(req.params.id).exec(),
+    Category.find({}, 'name').exec(),
+  ]);
+
+  if (!product) {
+    const error = new Error('Product not found');
+    error.status = 404;
+    return next(error);
+  }
+
+  categories.forEach((category) => {
+    if (!product.categories.includes(category._id)) return;
+    category.checked = true;
+  });
+
+  res.render('product_form', {
+    title: 'Upadate product',
+    product,
+    categories,
+  });
 });
 
-exports.product_update_post = asyncHandler(async (req, res) => {
-  res.send('Not implemented: product update post');
-});
+exports.product_update_post = [
+  productValidator,
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const productId = ObjectId.isValid(req.params.id) ? req.params.id : null;
+    const product = new Product({
+      _id: productId,
+      name: req.body.name,
+      description: req.body.description,
+      price: req.body.price,
+      number_in_stock: req.body.number_in_stock,
+      categories: req.body.categories,
+    });
+
+    if (productId === null) {
+      const error = new Error('Product not found');
+      error.status = 404;
+      return next(error);
+    }
+
+    if (!errors.isEmpty()) {
+      const allCategories = await Category.find({}, 'name');
+
+      res.render('product_form', {
+        title: 'Update product',
+        product,
+        categories: allCategories,
+        errors: errors.array(),
+      });
+      return;
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(productId, product);
+    res.redirect(updatedProduct.url);
+  }),
+];

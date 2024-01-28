@@ -25,6 +25,11 @@ exports.product_list = asyncHandler(async (req, res) => {
 });
 
 exports.product_details = asyncHandler(async (req, res, next) => {
+  if (!ObjectId.isValid(req.params.id)) {
+    // Prevent Product.findById from throwing when called with invalid id
+    req.params.id = null;
+  }
+
   const product = await Product.findById(req.params.id)
     .populate('categories')
     .exec();

@@ -12,6 +12,11 @@ exports.category_list = asyncHandler(async (req, res) => {
 });
 
 exports.category_details = asyncHandler(async (req, res, next) => {
+  if (!ObjectId.isValid(req.params.id)) {
+    // Prevent Category.findById from throwing if called with invalid id
+    req.params.id = null;
+  }
+
   const [category, productsByCategory] = await Promise.all([
     Category.findById(req.params.id),
     Product.find({ categories: req.params.id }, 'name'),

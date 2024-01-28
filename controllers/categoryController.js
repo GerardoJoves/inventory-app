@@ -120,13 +120,20 @@ exports.category_update_get = asyncHandler(async (req, res, next) => {
 
 exports.category_update_post = [
   categoryValidator,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
+    const categoryId = ObjectId.isValid(req.params.id) ? req.params.id : null;
     const category = new Category({
-      _id: req.params.id,
+      _id: categoryId,
       name: req.body.name,
       description: req.body.description,
     });
+
+    if (categoryId === null) {
+      const error = new Error('Category not found');
+      error.status = 404;
+      return next(error);
+    }
 
     if (!errors.isEmpty()) {
       res.render('category_form', {
@@ -138,7 +145,7 @@ exports.category_update_post = [
     }
 
     const updatedCategory = await Category.findByIdAndUpdate(
-      req.params.id,
+      categoryId,
       category
     );
     res.redirect(updatedCategory.url);

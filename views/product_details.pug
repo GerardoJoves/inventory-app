@@ -9,9 +9,14 @@ block content
     | #{product.description}
   p #[strong Number in stock: ] #{product.number_in_stock}
   p #[strong Categories: ]
-  ul 
-    each category in product.categories
-      li: a(href=category.url) #{category.name}
+
+  if product.categories.length > 0
+    ul 
+      each category in product.categories
+        li: a(href=category.url) #{category.name}
+  else 
+    p This product has no categories
+
   hr
   p: a(href=(product.url + '/delete')) Delete product
   p: a(href=(product.url + '/update')) Updaet product

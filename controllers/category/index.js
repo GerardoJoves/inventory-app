@@ -1,9 +1,9 @@
 const asyncHandler = require('express-async-handler');
 const { ObjectId } = require('mongoose').Types;
 const { validationResult } = require('express-validator');
-const Category = require('../models/category');
-const Product = require('../models/product');
-const categoryValidator = require('../utils/validators/categoryValidator');
+const Category = require('../../models/category');
+const Product = require('../../models/product');
+const categoryValidator = require('./validation');
 
 exports.category_list = asyncHandler(async (req, res) => {
   const allCategories = await Category.find({}, 'name').exec();

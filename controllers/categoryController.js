@@ -3,7 +3,7 @@ const { ObjectId } = require('mongoose').Types;
 const { validationResult } = require('express-validator');
 const Category = require('../models/category');
 const Product = require('../models/product');
-const categoryValidator = require('../utils/categoryValidator');
+const categoryValidator = require('../utils/validators/categoryValidator');
 
 exports.category_list = asyncHandler(async (req, res) => {
   const allCategories = await Category.find({}, 'name').exec();

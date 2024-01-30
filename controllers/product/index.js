@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const { validationResult } = require('express-validator');
 const { ObjectId } = require('mongoose').Types;
-const productValidator = require('./validation');
+const productValidation = require('./validation');
 const Product = require('../../models/product');
 const Category = require('../../models/category');
 
@@ -53,7 +53,7 @@ exports.product_create_get = asyncHandler(async (req, res) => {
 });
 
 exports.product_create_post = [
-  productValidator,
+  productValidation,
   asyncHandler(async (req, res) => {
     const errors = validationResult(req);
     const product = new Product({
@@ -140,7 +140,7 @@ exports.product_update_get = asyncHandler(async (req, res, next) => {
 });
 
 exports.product_update_post = [
-  productValidator,
+  productValidation,
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     const productId = ObjectId.isValid(req.params.id) ? req.params.id : null;

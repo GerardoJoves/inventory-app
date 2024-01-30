@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
+require('dotenv').config();
+
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const catalogRouter = require('./routes/catalog');
@@ -12,9 +14,7 @@ const catalogRouter = require('./routes/catalog');
 const app = express();
 
 // set up db connection
-const dev_db_url =
-  'mongodb+srv://admin:MSDTPsjp8ZkyiBx@cluster0.vlnhud0.mongodb.net/inventory_app?retryWrites=true&w=majority';
-const mongodb = process.env.MONGODB_URL || dev_db_url;
+const mongodb = process.env.MONGODB_URL;
 mongoose.set('strictQuery', true);
 
 async function connectDB() {

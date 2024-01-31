@@ -22,6 +22,7 @@ const productSchema = new Schema({
   image: {
     url: String,
     file_id: String,
+    file_name: String,
   },
 });
 

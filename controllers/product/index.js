@@ -96,6 +96,7 @@ exports.product_create_post = [
 
       product.image = {
         file_id: fileResponse.fileId,
+        file_name: fileResponse.name,
         url: fileResponse.url,
       };
     }

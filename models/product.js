@@ -19,6 +19,10 @@ const productSchema = new Schema({
     type: Number,
     default: 0,
   },
+  image: {
+    url: String,
+    file_id: String,
+  },
 });
 
 productSchema.virtual('url').get(function () {

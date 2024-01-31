@@ -6,7 +6,7 @@ block styles
 block content
   h2= title
 
-  form(method='post') 
+  form(method='post' enctype="multipart/form-data") 
     label(for='name') Name:
     input(
       type='text' 
@@ -41,6 +41,9 @@ block content
           name='number_in_stock'
           value=(product ? product.number_in_stock : '')
         )
+
+    label(for='product_image') Choose a product image
+    input(type='file' name='product_image' id='product_image')
 
     if categories
       fieldset 

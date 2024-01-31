@@ -1,4 +1,5 @@
 const { body } = require('express-validator');
+const isValidImage = require('../../utils/isValidImage');
 
 module.exports = [
   body('categories').customSanitizer((value) => {
@@ -20,4 +21,11 @@ module.exports = [
     .withMessage('Number in stock must be an integer'),
 
   body('categories.*').escape(),
+
+  body('product_image')
+    .custom((value, { req }) => {
+      if (!req.file) return true;
+      return isValidImage(req.file);
+    })
+    .withMessage('Invalid product image'),
 ];

@@ -3,6 +3,10 @@ extends layout
 block content
   h2 Product: #{product.name}
   p #[strong Price: ] #{product.price}$
+
+  if product.image && product.image.url 
+    img(src=product.image.url, alt="Product image")
+  
   p
     strong Description: 
     br

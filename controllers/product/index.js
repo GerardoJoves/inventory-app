@@ -1,7 +1,10 @@
+const path = require('path');
 const asyncHandler = require('express-async-handler');
 const { validationResult } = require('express-validator');
 const { ObjectId } = require('mongoose').Types;
 const productValidation = require('./validation');
+const upload = require('../../middleware/upload');
+const imageKit = require('../../config/imageKit');
 const Product = require('../../models/product');
 const Category = require('../../models/category');
 
@@ -53,7 +56,10 @@ exports.product_create_get = asyncHandler(async (req, res) => {
 });
 
 exports.product_create_post = [
+  upload.single('product_image'),
+
   productValidation,
+
   asyncHandler(async (req, res) => {
     const errors = validationResult(req);
     const product = new Product({
@@ -79,6 +85,19 @@ exports.product_create_post = [
         errors: errors.array(),
       });
       return;
+    }
+
+    if (req.file) {
+      const fileResponse = await imageKit.upload({
+        file: req.file.buffer.toString('base64'),
+        fileName: Date.now() + path.extname(req.file.originalname),
+        folder: 'inventory_app',
+      });
+
+      product.image = {
+        file_id: fileResponse.fileId,
+        url: fileResponse.url,
+      };
     }
 
     await product.save();

@@ -123,10 +123,13 @@ exports.product_delete_get = async (req, res) => {
 
 exports.product_delete_post = asyncHandler(async (req, res) => {
   if (ObjectId.isValid(req.params.id)) {
-    await Product.findByIdAndDelete(req.params.id);
+    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+    if (deletedProduct && deletedProduct.image.file_id) {
+      await imageKit.deleteFile(deletedProduct.image.file_id);
+    }
   }
 
-  res.redirect('/catalog/products');
+  return res.redirect('/catalog/products');
 });
 
 exports.product_update_get = asyncHandler(async (req, res, next) => {

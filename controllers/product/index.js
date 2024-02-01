@@ -199,18 +199,18 @@ exports.product_update_post = [
     }
 
     if (req.file) {
-      let deleteFilePromise = Promise.resolve();
+      let deletePrevImage = Promise.resolve();
       if (originalProduct.image.file_id) {
-        deleteFilePromise = imageKit.deleteFile(originalProduct.image.file_id);
+        deletePrevImage = imageKit.deleteFile(originalProduct.image.file_id);
       }
 
       const [fileResponse] = await Promise.all([
-        await imageKit.upload({
+        imageKit.upload({
           file: req.file.buffer.toString('base64'),
           fileName: Date.now() + path.extname(req.file.originalname),
           folder: 'inventory_app',
         }),
-        deleteFilePromise,
+        deletePrevImage,
       ]);
 
       updatedProduct.image = {

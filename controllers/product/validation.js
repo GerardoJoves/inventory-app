@@ -22,6 +22,8 @@ module.exports = [
 
   body('categories.*').escape(),
 
+  body('remove_image').isBoolean().optional({ value: 'falsy' }),
+
   body('product_image')
     .custom((value, { req }) => {
       if (!req.file) return true;

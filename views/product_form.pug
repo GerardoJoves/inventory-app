@@ -42,6 +42,19 @@ block content
           value=(product ? product.number_in_stock : '')
         )
 
+    if product && product.image.url
+      div
+        img(src=product.image.url, alt="Product image")
+      div
+        input(
+          type='checkbox'
+          id='remove_image'
+          name='remove_image'
+          value='true'
+        )
+        |  
+        label(for='remove_image') Remove product image
+
     label(for='product_image') Choose a product image
     input(type='file' name='product_image' id='product_image')
 
@@ -51,7 +64,7 @@ block content
         each category in categories
           div 
             input(
-              type="checkbox" 
+              type='checkbox'
               id=category._id 
               name='categories' 
               value=category._id

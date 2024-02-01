@@ -170,7 +170,6 @@ exports.product_update_post = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     const productId = ObjectId.isValid(req.params.id) ? req.params.id : null;
-    const originalProduct = await Product.findById(productId);
     const updatedProduct = new Product({
       _id: productId,
       name: req.body.name,
@@ -198,29 +197,43 @@ exports.product_update_post = [
       return;
     }
 
-    if (req.file) {
-      let deletePrevImage = Promise.resolve();
+    if (req.file || req.body.remove_image) {
+      const originalProduct = await Product.findById(productId);
+      let deletePrevImage = null;
+      let uploadNewImage = null;
+
       if (originalProduct.image.file_id) {
         deletePrevImage = imageKit.deleteFile(originalProduct.image.file_id);
       }
 
-      const [fileResponse] = await Promise.all([
-        imageKit.upload({
+      if (req.file && req.body.remove_image === undefined) {
+        uploadNewImage = imageKit.upload({
           file: req.file.buffer.toString('base64'),
           fileName: Date.now() + path.extname(req.file.originalname),
           folder: 'inventory_app',
-        }),
+        });
+      }
+
+      const [fileResponse] = await Promise.all([
+        uploadNewImage,
         deletePrevImage,
       ]);
 
-      updatedProduct.image = {
-        file_id: fileResponse.fileId,
-        file_name: fileResponse.name,
-        url: fileResponse.url,
-      };
+      if (fileResponse) {
+        updatedProduct.image = {
+          file_id: fileResponse.fileId,
+          file_name: fileResponse.name,
+          url: fileResponse.url,
+        };
+      }
     }
 
-    await Product.findByIdAndUpdate(productId, updatedProduct);
+    const unsetImage = updatedProduct.image.file_id ? {} : { image: 1 };
+    await Product.findByIdAndUpdate(productId, {
+      $set: updatedProduct,
+      $unset: unsetImage,
+    });
+
     res.redirect(updatedProduct.url);
   }),
 ];

@@ -6,7 +6,8 @@ form {
 form > input,
 form > textarea,
 form > .numeric-fields-wrapper,
-form > fieldset {
+form > fieldset,
+form > div {
   margin-bottom: 20px;
   resize: vertical;
 }

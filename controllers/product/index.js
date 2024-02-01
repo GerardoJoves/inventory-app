@@ -163,11 +163,15 @@ exports.product_update_get = asyncHandler(async (req, res, next) => {
 });
 
 exports.product_update_post = [
+  upload.single('product_image'),
+
   productValidation,
+
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     const productId = ObjectId.isValid(req.params.id) ? req.params.id : null;
-    const product = new Product({
+    const originalProduct = await Product.findById(productId);
+    const updatedProduct = new Product({
       _id: productId,
       name: req.body.name,
       description: req.body.description,
@@ -176,7 +180,7 @@ exports.product_update_post = [
       categories: req.body.categories,
     });
 
-    if (productId === null) {
+    if (!productId) {
       const error = new Error('Product not found');
       error.status = 404;
       return next(error);
@@ -187,14 +191,36 @@ exports.product_update_post = [
 
       res.render('product_form', {
         title: 'Update product',
-        product,
+        updatedProduct,
         categories: allCategories,
         errors: errors.array(),
       });
       return;
     }
 
-    const updatedProduct = await Product.findByIdAndUpdate(productId, product);
+    if (req.file) {
+      let deleteFilePromise = Promise.resolve();
+      if (originalProduct.image.file_id) {
+        deleteFilePromise = imageKit.deleteFile(originalProduct.image.file_id);
+      }
+
+      const [fileResponse] = await Promise.all([
+        await imageKit.upload({
+          file: req.file.buffer.toString('base64'),
+          fileName: Date.now() + path.extname(req.file.originalname),
+          folder: 'inventory_app',
+        }),
+        deleteFilePromise,
+      ]);
+
+      updatedProduct.image = {
+        file_id: fileResponse.fileId,
+        file_name: fileResponse.name,
+        url: fileResponse.url,
+      };
+    }
+
+    await Product.findByIdAndUpdate(productId, updatedProduct);
     res.redirect(updatedProduct.url);
   }),
 ];

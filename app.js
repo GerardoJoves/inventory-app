@@ -26,11 +26,19 @@ const limiter = rateLimit({
 // Apply rate limiter to all requests
 app.use(limiter);
 
+// Set HTTP response headers
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      'img-src': ["'self'", 'ik.imagekit.io'],
+    },
+  })
+);
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(helmet()); // Set HTTP response headers
 app.use(compression()); // Compress responses for all routes
 app.use(express.static(path.join(__dirname, 'public')));
 

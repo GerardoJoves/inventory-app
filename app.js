@@ -3,6 +3,9 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const compression = require('compression');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -10,15 +13,25 @@ const catalogRouter = require('./routes/catalog');
 
 require('./config/db');
 const app = express();
-
 // view engine setup
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+// Set up rate limiter: maximum of twenty requests per minute
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 20,
+});
+// Apply rate limiter to all requests
+app.use(limiter);
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(helmet()); // Set HTTP response headers
+app.use(compression()); // Compress responses for all routes
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);

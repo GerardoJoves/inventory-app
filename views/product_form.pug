@@ -57,7 +57,11 @@ block content
         |  
         label(for='remove_image') Remove product image
 
-    label(for='product_image') Choose a product image
+    label(for='product_image') 
+      if product.image.file_id
+        | Change product image
+      else
+        | Choose product image
     input(type='file' name='product_image' id='product_image')
 
     if categories

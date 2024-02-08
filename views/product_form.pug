@@ -58,7 +58,7 @@ block content
         label(for='remove_image') Remove product image
 
     label(for='product_image') 
-      if product.image.file_id
+      if product && product.image.file_id
         | Change product image
       else
         | Choose product image

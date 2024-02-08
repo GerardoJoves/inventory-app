@@ -206,7 +206,7 @@ exports.product_update_post = [
         deletePrevImage = imageKit.deleteFile(originalProduct.image.file_id);
       }
 
-      if (req.file && req.body.remove_image === undefined) {
+      if (req.file && !req.body.remove_image) {
         uploadNewImage = imageKit.upload({
           file: req.file.buffer.toString('base64'),
           fileName: Date.now() + path.extname(req.file.originalname),
@@ -228,12 +228,10 @@ exports.product_update_post = [
       }
     }
 
-    const unsetImage = updatedProduct.image.file_id ? {} : { image: 1 };
-    await Product.findByIdAndUpdate(productId, {
+    const saved = await Product.findByIdAndUpdate(productId, {
       $set: updatedProduct,
-      $unset: unsetImage,
+      $unset: req.body.remove_image ? { image: 1 } : {},
     });
-
-    res.redirect(updatedProduct.url);
+    res.redirect(saved.url);
   }),
 ];

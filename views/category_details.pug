@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  h2 Category: #{category.name}
+  h2 Category: !{category.name}
   if category.description
     p= category.description
   h3 Products
@@ -10,7 +10,7 @@ block content
   else
     ul 
       each product in products
-        li: a(href=product.url) #{product.name}
+        li: a(href=product.url) !{product.name}
   hr
   p: a(href=(category.url + '/delete')) Delete category
   p: a(href=(category.url + '/update')) Update category

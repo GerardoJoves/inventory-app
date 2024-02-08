@@ -12,14 +12,14 @@ block content
       id='name'
       name='name'
       required
-      value=(category ? category.name : '')
+      value!=(category ? category.name : '')
     )
 
     label(for='description') Description:
     textarea(
       id='description'
       name='description'
-    ) #{category ? category.description : ''}
+    ) !{category ? category.description : ''}
 
     button(type='submit') Submit
 

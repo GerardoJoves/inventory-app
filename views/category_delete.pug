@@ -4,7 +4,7 @@ block styles
   link(rel='stylesheet' href='/stylesheets/form.css')
 
 block content
-  h2= `${title}: ${category.name}`
+  h2!= `${title}: ${category.name}`
 
   if products.length != 0
     p Remove this category from the following products before attempting to delete it:

@@ -13,7 +13,7 @@ block content
       type='text' 
       id='name' 
       name='name' 
-      value=(product ? product.name : '') 
+      value!=(product ? product.name : '') 
       required
     )
 
@@ -23,7 +23,7 @@ block content
       name='description'
       rows='5'
       required
-    ) #{product ? product.description : ''}
+    ) !{product ? product.description : ''}
 
     div.numeric-fields-wrapper
       div
@@ -77,7 +77,7 @@ block content
               checked=category.checked
             )
             |  
-            label(for=category._id) #{category.name}
+            label(for=category._id) !{category.name}
     button(type='submit') submit
     
   if errors

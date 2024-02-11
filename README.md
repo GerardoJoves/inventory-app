@@ -13,3 +13,5 @@ The purpose of this project was to practice:
 - How to validate and sanitize user data using Express Validator.
 - How to handle file uploading with Multer.
 - How to create templates with Pug.
+
+[Live preview](https://towering-first-bulb.glitch.me/)
